@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent)
     QString totalRam = QString::number(totalMemory, 'f', 2) + " GB";
 
     QVariantMap osInfo {
+        { "infoType", "OS-Info" },
         { "osName", osName },
         { "osVersion", osVersion },
         { "cpuArchitecture", cpuArchitecture },

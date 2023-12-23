@@ -14,6 +14,7 @@ public:
     virtual ~TcpServer();
     bool tcpListen(int port);
     void disconnectClient(int socketDescriptor);
+    void stopServer();
 signals:
     void newTcpClientConnected(TcpClient *client);
     void tcpClientDisconnected(int socketDescriptor);

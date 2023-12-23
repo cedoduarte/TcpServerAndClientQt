@@ -26,11 +26,16 @@ private slots:
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
     void on_removeClientButton_clicked();
 
+    void on_listenServerButton_clicked();
+
+    void on_stopServerButton_clicked();
+
 private:
     int clientIndex(int socketDescriptor) const;
     void addClient(TcpClient *client);
     void removeClient(int socketDescriptor);
     QString clientStateToString(int state) const;
+    void clearTreeWidget();
 
     Ui::MainWindow *ui;
     TcpServer *m_tcpServer;

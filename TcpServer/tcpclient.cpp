@@ -1,5 +1,7 @@
 #include "tcpclient.h"
 
+#include <QDebug>
+
 TcpClient::TcpClient(QObject *parent)
     : QTcpSocket(parent)
 {

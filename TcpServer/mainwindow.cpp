@@ -7,7 +7,6 @@
 
 #include <QDebug>
 #include <QTreeWidgetItem>
-#include <QTreeWidgetItemIterator>
 #include <QTextStream>
 #include <QJsonDocument>
 #include <QJsonObject>
@@ -21,6 +20,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->txtPort->setText("3333");
+    ui->stopServerButton->setEnabled(false);
     ui->disconnectClientButton->setEnabled(false);
     ui->removeClientButton->setEnabled(false);
 
@@ -28,7 +29,6 @@ MainWindow::MainWindow(QWidget *parent)
     connect(m_tcpServer, &TcpServer::newTcpClientConnected, this, &MainWindow::newTcpClientConnected);
     connect(m_tcpServer, &TcpServer::tcpClientDisconnected, this, &MainWindow::tcpClientDisconnected);
     connect(m_tcpServer, &TcpServer::tcpClientReadyRead, this, &MainWindow::tcpClientReadyRead);
-    m_tcpServer->tcpListen(3333);
 }
 
 MainWindow::~MainWindow()
@@ -52,7 +52,7 @@ void MainWindow::tcpClientReadyRead(TcpClient *client)
 {
     QTextStream stream(client);
     QString content = stream.readAll();
-    if (Util::stringContains(content, {"osName","osVersion","cpuArchitecture"}))
+    if (Util::stringContains(content, {"\"infoType\":\"OS-Info\""}))
     {
         QJsonDocument doc = QJsonDocument::fromJson(content.toLatin1());
         QJsonObject osInfo = doc.object();
@@ -116,6 +116,14 @@ QString MainWindow::clientStateToString(int state) const
     return "";
 }
 
+void MainWindow::clearTreeWidget()
+{
+    int total = ui->treeWidget->topLevelItemCount();
+    for (int i = 0; i < total; i++)
+    {
+        delete ui->treeWidget->takeTopLevelItem(0);
+    }
+}
 
 void MainWindow::on_disconnectClientButton_clicked()
 {
@@ -129,7 +137,6 @@ void MainWindow::on_disconnectClientButton_clicked()
         ui->removeClientButton->setEnabled(true);
     }
 }
-
 
 void MainWindow::on_treeWidget_itemClicked(QTreeWidgetItem *item, int column)
 {
@@ -155,3 +162,21 @@ void MainWindow::on_removeClientButton_clicked()
     ui->removeClientButton->setEnabled(false);
 }
 
+void MainWindow::on_listenServerButton_clicked()
+{
+    int port = ui->txtPort->text().toInt();
+    if (m_tcpServer->tcpListen(port))
+    {
+        ui->listenServerButton->setText("Listening...");
+        ui->listenServerButton->setEnabled(false);
+        ui->stopServerButton->setEnabled(true);
+    }
+}
+
+void MainWindow::on_stopServerButton_clicked()
+{
+    m_tcpServer->stopServer();
+    ui->listenServerButton->setEnabled(true);
+    ui->stopServerButton->setEnabled(false);
+    clearTreeWidget();
+}

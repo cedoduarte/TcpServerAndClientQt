@@ -21,7 +21,19 @@ void TcpServer::disconnectClient(int socketDescriptor)
     if (it != m_clientList.end())
     {
         it->second->disconnectFromHost();
+        // do not delete and remove iterator, this method does:
+        // void TcpServer::clientDisconnected(TcpClient *client)
     }
+}
+
+void TcpServer::stopServer()
+{
+    for (auto it = m_clientList.begin(); it != m_clientList.end(); it++)
+    {
+        it->second->disconnectFromHost();
+        it->second->deleteLater();
+    }
+    m_clientList.clear();
 }
 
 void TcpServer::incomingConnection(qintptr socketDescriptor)
