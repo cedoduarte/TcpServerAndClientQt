@@ -20,52 +20,62 @@ public:
     QString cpuArchitecture() const { return m_cpuArchitecture; }
     QString totalRam() const { return m_totalRam; }
 
-    TcpClientItem* setName(const QString &name) {
+    TcpClientItem* setName(const QString &name)
+    {
         m_name = name;
         return this;
     }
 
-    TcpClientItem* setPeerIpAddress(const QString &peerIpAddress) {
+    TcpClientItem* setPeerIpAddress(const QString &peerIpAddress)
+    {
         m_peerIpAddress = peerIpAddress;
         return this;
     }
 
-    TcpClientItem* setPeerPort(const QString &peerPort) {
+    TcpClientItem* setPeerPort(const QString &peerPort)
+    {
         m_peerPort = peerPort;
         return this;
     }
 
-    TcpClientItem* setLocalIpAddress(const QString &localIpAddress) {
+    TcpClientItem* setLocalIpAddress(const QString &localIpAddress)
+    {
         m_localIpAddress = localIpAddress;
         return this;
     }
 
-    TcpClientItem* setLocalPort(const QString &localPort) {
+    TcpClientItem* setLocalPort(const QString &localPort)
+    {
         m_localPort = localPort;
         return this;
     }
 
-    TcpClientItem* setState(const QString &state) {
+    TcpClientItem* setState(const QString &state)
+    {
         m_state = state;
         return this;
     }
 
-    TcpClientItem* setOsName(const QString &osName) {
+    TcpClientItem* setOsName(const QString &osName)
+    {
         m_osName = osName;
         return this;
     }
 
-    TcpClientItem* setOsVersion(const QString &osVersion) {
+    TcpClientItem* setOsVersion(const QString &osVersion)
+    {
         m_osVersion = osVersion;
         return this;
     }
 
-    TcpClientItem* setCpuArchitecture(const QString &cpuArchitecture) {
+    TcpClientItem* setCpuArchitecture(const QString &cpuArchitecture)
+    {
         m_cpuArchitecture = cpuArchitecture;
         return this;
     }
 
-    TcpClientItem* setTotalRam(const QString &totalRam) {
+    TcpClientItem* setTotalRam(const QString &totalRam)
+    {
         m_totalRam = totalRam;
         return this;
     }
@@ -103,14 +113,14 @@ private:
     QTreeWidgetItem *m_cpuArchitectureItem;
     QTreeWidgetItem *m_totalRamItem;
 
-    static QString s_unconnectedState;
-    static QString s_disconnectedState;
-    static QString s_hostLookupState;
-    static QString s_connectingState;
-    static QString s_connectedState;
-    static QString s_boundState;
-    static QString s_listeningState;
-    static QString s_closingState;
+    static const QString s_unconnectedState;
+    static const QString s_disconnectedState;
+    static const QString s_hostLookupState;
+    static const QString s_connectingState;
+    static const QString s_connectedState;
+    static const QString s_boundState;
+    static const QString s_listeningState;
+    static const QString s_closingState;
 };
 
 #endif // TCPCLIENTITEM_H

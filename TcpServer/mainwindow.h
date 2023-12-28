@@ -25,11 +25,8 @@ private slots:
     void on_disconnectClientButton_clicked();    
     void on_treeWidget_itemClicked(QTreeWidgetItem *item, int column);
     void on_removeClientButton_clicked();
-
     void on_listenServerButton_clicked();
-
     void on_stopServerButton_clicked();
-
 private:
     int clientIndex(int socketDescriptor) const;
     void addClient(TcpClient *client);

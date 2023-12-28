@@ -1,13 +1,13 @@
 #include "tcpclientitem.h"
 
-QString TcpClientItem::s_unconnectedState = "Unconnected";
-QString TcpClientItem::s_disconnectedState = "Disconnected";
-QString TcpClientItem::s_hostLookupState = "Host look up";
-QString TcpClientItem::s_connectingState = "Connecting";
-QString TcpClientItem::s_connectedState = "Connected";
-QString TcpClientItem::s_boundState = "Bound";
-QString TcpClientItem::s_listeningState = "Listening";
-QString TcpClientItem::s_closingState = "Closing";
+const QString TcpClientItem::s_unconnectedState = "Unconnected";
+const QString TcpClientItem::s_disconnectedState = "Disconnected";
+const QString TcpClientItem::s_hostLookupState = "Host look up";
+const QString TcpClientItem::s_connectingState = "Connecting";
+const QString TcpClientItem::s_connectedState = "Connected";
+const QString TcpClientItem::s_boundState = "Bound";
+const QString TcpClientItem::s_listeningState = "Listening";
+const QString TcpClientItem::s_closingState = "Closing";
 
 TcpClientItem::TcpClientItem()
 {
