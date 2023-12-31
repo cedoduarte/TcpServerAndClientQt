@@ -16,6 +16,8 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = nullptr);
     virtual ~MainWindow();
+private slots:
+    void on_connectToServerButton_clicked();
 private:
     qint64 getTotalRam() const;
 

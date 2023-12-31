@@ -13,6 +13,8 @@ find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Network)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Network)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Sql)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Sql)
 
 set(PROJECT_SOURCES
     main.cpp
@@ -26,7 +28,8 @@ set(PROJECT_SOURCES
     tcpclientitem.h
     tcpclientitem.cpp
     util.h
-    util.cpp
+    util.cpp    
+    client.h client.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -54,6 +57,7 @@ endif()
 
 target_link_libraries(TcpServer PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
 target_link_libraries(TcpServer PRIVATE Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(TcpServer PRIVATE Qt${QT_VERSION_MAJOR}::Sql)
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
 # If you are developing for iOS or macOS you should consider setting an

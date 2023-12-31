@@ -2,10 +2,12 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSqlDatabase>
 
 class TcpServer;
 class TcpClient;
 class QTreeWidgetItem;
+class Client;
 
 namespace Ui
 {
@@ -30,12 +32,16 @@ private slots:
 private:
     int clientIndex(int socketDescriptor) const;
     void addClient(TcpClient *client);
-    void removeClient(int socketDescriptor);
     QString clientStateToString(int state) const;
     void clearTreeWidget();
+    bool usernameExists(const QString &username) const;
+    QString generateUniqueUsername(const QString &baseName) const;
+    void createTables() const;
+    void insertClient(const Client *client) const;
 
     Ui::MainWindow *ui;
     TcpServer *m_tcpServer;
+    QSqlDatabase m_db;
 };
 
 #endif // MAINWINDOW_H

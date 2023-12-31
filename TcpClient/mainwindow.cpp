@@ -26,34 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     m_client = new QTcpSocket(this);
-    m_client->connectToHost("localhost", 3333);
-    m_client->waitForConnected();
-
-    QString osName = QSysInfo::prettyProductName();
-
-    // Get the operating system version
-    QString osVersion = QSysInfo::productVersion();
-
-    // Get the architecture of the CPU
-    QString cpuArchitecture = QSysInfo::currentCpuArchitecture();
-
-    double totalMemory = getTotalRam() / std::pow(1024.0, 3.0);
-    QString totalRam = QString::number(totalMemory, 'f', 2) + " GB";
-
-    QVariantMap osInfo {
-        { "infoType", "OS-Info" },
-        { "osName", osName },
-        { "osVersion", osVersion },
-        { "cpuArchitecture", cpuArchitecture },
-        { "totalRam", totalRam }
-    };
-
-    QByteArray osInfoData = QJsonDocument::fromVariant(osInfo).toJson(QJsonDocument::Compact);
-
-    QTextStream stream(m_client);
-    stream << osInfoData;
 }
 
 MainWindow::~MainWindow()
@@ -80,3 +53,40 @@ qint64 MainWindow::getTotalRam() const
 #endif
     return 0;
 }
+
+void MainWindow::on_connectToServerButton_clicked()
+{
+    m_client->connectToHost("localhost", 3333);
+    ui->statusbar->showMessage("Connecting to server...");
+    if (m_client->waitForConnected())
+    {
+        ui->connectToServerButton->setEnabled(false);
+
+        QString osName = QSysInfo::prettyProductName();
+        QString osVersion = QSysInfo::productVersion();
+        QString cpuArchitecture = QSysInfo::currentCpuArchitecture();
+        double totalMemory = getTotalRam() / std::pow(1024.0, 3.0);
+        QString totalRam = QString::number(totalMemory, 'f', 2) + " GB";
+        QString username = ui->txtUsername->text();
+
+        QVariantMap osInfo {
+            { "infoType", "OS-Info" },
+            { "osName", osName },
+            { "osVersion", osVersion },
+            { "cpuArchitecture", cpuArchitecture },
+            { "totalRam", totalRam },
+            { "username", username }
+        };
+
+        QByteArray osInfoData = QJsonDocument::fromVariant(osInfo).toJson(QJsonDocument::Compact);
+        QTextStream stream(m_client);
+        stream << osInfoData;
+        ui->statusbar->showMessage("Connected successfully!");
+    }
+    else
+    {
+        ui->connectToServerButton->setEnabled(true);
+        ui->statusbar->showMessage("Not connected!");
+    }
+}
+

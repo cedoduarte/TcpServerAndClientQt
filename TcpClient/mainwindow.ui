@@ -13,7 +13,90 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
-  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="connectToServerButton">
+    <property name="geometry">
+     <rect>
+      <x>168</x>
+      <y>131</y>
+      <width>126</width>
+      <height>29</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Connect to Server</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>62</x>
+      <y>32</y>
+      <width>96</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Server address</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>130</x>
+      <y>60</y>
+      <width>26</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Port</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtServerAddress">
+    <property name="geometry">
+     <rect>
+      <x>168</x>
+      <y>32</y>
+      <width>154</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtPort">
+    <property name="geometry">
+     <rect>
+      <x>168</x>
+      <y>65</y>
+      <width>154</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>95</x>
+      <y>98</y>
+      <width>66</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Username</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="txtUsername">
+    <property name="geometry">
+     <rect>
+      <x>168</x>
+      <y>98</y>
+      <width>154</width>
+      <height>26</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>

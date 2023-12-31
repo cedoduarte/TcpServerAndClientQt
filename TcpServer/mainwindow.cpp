@@ -4,8 +4,10 @@
 #include "tcpclient.h"
 #include "tcpclientitem.h"
 #include "util.h"
+#include "client.h"
 
 #include <QDebug>
+#include <QDateTime>
 #include <QTreeWidgetItem>
 #include <QTextStream>
 #include <QJsonDocument>
@@ -14,12 +16,22 @@
 #include <QJsonValue>
 #include <QJsonParseError>
 #include <QVariantMap>
+#include <QSqlQuery>
+#include <QSqlError>
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    m_db = QSqlDatabase::addDatabase("QSQLITE");
+    m_db.setDatabaseName("tcp_server_database.sqlite");
+    if (m_db.open())
+    {
+        createTables();
+    }
+
     ui->txtPort->setText("3333");
     ui->stopServerButton->setEnabled(false);
     ui->disconnectClientButton->setEnabled(false);
@@ -48,6 +60,63 @@ void MainWindow::tcpClientDisconnected(int socketDescriptor)
     clientItem->setState(TcpClientItem::disconnectedState())->update();
 }
 
+QString MainWindow::generateUniqueUsername(const QString &baseName) const
+{
+    QString timestamp = QDateTime::currentDateTime().toString("yyyyMMddhhmmss");
+    return baseName + "_" + timestamp;
+}
+
+void MainWindow::createTables() const
+{
+    QSqlQuery query;
+    if (query.prepare(Client::sqlCreate()))
+    {
+        if (query.exec())
+        {
+            qDebug() << "table 'client' created successfully!";
+        }
+        else
+        {
+            qDebug() << query.lastError().text() << __FILE__ << __LINE__;
+        }
+    }
+    else
+    {
+        qDebug() << query.lastError().text() << __FILE__ << __LINE__;
+    }
+}
+
+void MainWindow::insertClient(const Client *client) const
+{
+    QSqlQuery query;
+    if (query.prepare(Client::sqlInsert()))
+    {
+        query.bindValue(":name", client->name());
+        query.bindValue(":peer_ip_address", client->peerIpAddress());
+        query.bindValue(":peer_port", client->peerPort());
+        query.bindValue(":local_ip_address", client->localIpAddress());
+        query.bindValue(":local_port", client->localPort());
+        query.bindValue(":state", client->state());
+        query.bindValue(":os_name", client->osName());
+        query.bindValue(":os_version", client->osVersion());
+        query.bindValue(":cpu_architecture", client->cpuArchitecture());
+        query.bindValue(":total_ram", client->totalRam());
+        query.bindValue(":username", client->username());
+        if (query.exec())
+        {
+            qDebug() << "client inserted successfully!";
+        }
+        else
+        {
+            qDebug() << query.lastError().text() << __FILE__ << __LINE__;
+        }
+    }
+    else
+    {
+        qDebug() << query.lastError().text() << __FILE__ << __LINE__;
+    }
+}
+
 void MainWindow::tcpClientReadyRead(TcpClient *client)
 {
     QTextStream stream(client);
@@ -56,17 +125,40 @@ void MainWindow::tcpClientReadyRead(TcpClient *client)
     {
         QJsonDocument doc = QJsonDocument::fromJson(content.toLatin1());
         QJsonObject osInfo = doc.object();
+
+        QString username = osInfo["username"].toString();
+        if (usernameExists(username))
+        {
+            username = generateUniqueUsername(username);
+        }
         QString osName = osInfo["osName"].toString();
         QString osVersion = osInfo["osVersion"].toString();
         QString cpuArchitecture = osInfo["cpuArchitecture"].toString();
         QString totalRam = osInfo["totalRam"].toString();
-        int index = clientIndex(client->socketDescriptor());
-        TcpClientItem *clientItem = dynamic_cast<TcpClientItem*>(ui->treeWidget->topLevelItem(index));
+
+        int itemIndex = clientIndex(client->socketDescriptor());
+        TcpClientItem *clientItem = dynamic_cast<TcpClientItem*>(ui->treeWidget->topLevelItem(itemIndex));
         clientItem->setOsName(osName)
             ->setOsVersion(osVersion)
             ->setCpuArchitecture(cpuArchitecture)
             ->setTotalRam(totalRam)
+            ->setUsername(username)
             ->update();
+
+        Client *client = new Client;
+        client->setName(clientItem->name())
+            ->setPeerIpAddress(clientItem->peerIpAddress())
+            ->setPeerPort(clientItem->peerPort())
+            ->setLocalIpAddress(clientItem->localIpAddress())
+            ->setLocalPort(clientItem->localPort())
+            ->setState(clientItem->state())
+            ->setOsName(clientItem->osName())
+            ->setOsVersion(clientItem->osVersion())
+            ->setCpuArchitecture(clientItem->cpuArchitecture())
+            ->setTotalRam(clientItem->totalRam())
+            ->setUsername(clientItem->username());
+        insertClient(client);
+        delete client;
     }
 }
 
@@ -96,11 +188,6 @@ void MainWindow::addClient(TcpClient *client)
     ui->treeWidget->addTopLevelItem(clientItem);
 }
 
-void MainWindow::removeClient(int socketDescriptor)
-{
-    // todo...
-}
-
 QString MainWindow::clientStateToString(int state) const
 {
     switch (state)
@@ -119,10 +206,23 @@ QString MainWindow::clientStateToString(int state) const
 void MainWindow::clearTreeWidget()
 {
     int total = ui->treeWidget->topLevelItemCount();
-    for (int i = 0; i < total; i++)
+    for (int itemIndex = 0; itemIndex < total; itemIndex++)
     {
         delete ui->treeWidget->takeTopLevelItem(0);
     }
+}
+
+bool MainWindow::usernameExists(const QString &username) const
+{
+    for (int itemIndex = 0; itemIndex < ui->treeWidget->topLevelItemCount(); itemIndex++)
+    {
+        TcpClientItem *clientItem = dynamic_cast<TcpClientItem*>(ui->treeWidget->topLevelItem(itemIndex));
+        if (clientItem->username() == username)
+        {
+            return true;
+        }
+    }
+    return false;
 }
 
 void MainWindow::on_disconnectClientButton_clicked()

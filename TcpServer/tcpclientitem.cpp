@@ -31,6 +31,7 @@ void TcpClientItem::init()
     m_osVersion ="unknown";
     m_cpuArchitecture = "unknown";
     m_totalRam = "unknown";
+    m_username = "unknown";
 
     m_peerIpAddressItem = new QTreeWidgetItem;
     m_peerPortItem = new QTreeWidgetItem;
@@ -41,6 +42,7 @@ void TcpClientItem::init()
     m_osVersionItem = new QTreeWidgetItem;
     m_cpuArchitectureItem = new QTreeWidgetItem;
     m_totalRamItem = new QTreeWidgetItem;
+    m_usernameItem = new QTreeWidgetItem;
 }
 
 void TcpClientItem::setChildrenItems()
@@ -54,7 +56,8 @@ void TcpClientItem::setChildrenItems()
         m_osNameItem,
         m_osVersionItem,
         m_cpuArchitectureItem,
-        m_totalRamItem
+        m_totalRamItem,
+        m_usernameItem
     });
 }
 
@@ -70,4 +73,5 @@ void TcpClientItem::update()
     m_osVersionItem->setText(0, "OS version: " + m_osVersion);
     m_cpuArchitectureItem->setText(0, "CPU Architecture: " + m_cpuArchitecture);
     m_totalRamItem->setText(0, "Total RAM: " + m_totalRam);
+    m_usernameItem->setText(0, "Username: " + m_username);
 }

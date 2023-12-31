@@ -8,7 +8,9 @@ class TcpClientItem : public QTreeWidgetItem
 public:
     explicit TcpClientItem();
     virtual ~TcpClientItem();
+
     void update();
+
     QString name() const { return m_name; }
     QString peerIpAddress() const { return m_peerIpAddress; }
     QString peerPort() const { return m_peerPort; };
@@ -19,6 +21,7 @@ public:
     QString osVersion() const { return m_osVersion; }
     QString cpuArchitecture() const { return m_cpuArchitecture; }
     QString totalRam() const { return m_totalRam; }
+    QString username() const { return m_username; }
 
     TcpClientItem* setName(const QString &name)
     {
@@ -80,6 +83,12 @@ public:
         return this;
     }
 
+    TcpClientItem* setUsername(const QString &username)
+    {
+        m_username = username;
+        return this;
+    }
+
     static QString unconnectedState() { return s_unconnectedState; }
     static QString disconnectedState() { return s_disconnectedState; }
     static QString hostLookupState() { return s_hostLookupState; }
@@ -102,6 +111,7 @@ private:
     QString m_osVersion;
     QString m_cpuArchitecture;
     QString m_totalRam;
+    QString m_username;
 
     QTreeWidgetItem *m_peerIpAddressItem;
     QTreeWidgetItem *m_peerPortItem;
@@ -112,6 +122,7 @@ private:
     QTreeWidgetItem *m_osVersionItem;
     QTreeWidgetItem *m_cpuArchitectureItem;
     QTreeWidgetItem *m_totalRamItem;
+    QTreeWidgetItem *m_usernameItem;
 
     static const QString s_unconnectedState;
     static const QString s_disconnectedState;
